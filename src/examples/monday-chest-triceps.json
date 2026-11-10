@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "routines": [
+    {
+      "id": "example-monday-chest-triceps",
+      "name": "Lunes - Pecho y Tríceps",
+      "entries": [
+        {
+          "id": "example-monday-1",
+          "exerciseId": "press-banca-con-mancuernas-pectoral",
+          "sets": "3",
+          "reps": "8–12",
+          "rest": "120",
+          "notes": "Antes de las series de trabajo: 5–8 minutos de calentamiento y 1–2 series ligeras de aproximación. Elige una carga que te deje 2–3 repeticiones en reserva."
+        },
+        {
+          "id": "example-monday-2",
+          "exerciseId": "press-inclinado-en-maquina-pectoral",
+          "sets": "3",
+          "reps": "10–12",
+          "rest": "120",
+          "notes": "Ajusta el asiento para empujar de forma cómoda. Movimiento controlado, sin despegar la espalda del apoyo."
+        },
+        {
+          "id": "example-monday-3",
+          "exerciseId": "aperturas-con-mancuernas-pectoral",
+          "sets": "2",
+          "reps": "12–15",
+          "rest": "90",
+          "notes": "Usa una carga moderada y mantén los codos ligeramente flexionados. Trabaja dentro de un recorrido cómodo."
+        },
+        {
+          "id": "example-monday-4",
+          "exerciseId": "extension-vertical-en-pronacion-en-polea-alta-triceps",
+          "sets": "2",
+          "reps": "10–15",
+          "rest": "90",
+          "notes": "Mantén los codos cerca del cuerpo y evita balancearte para mover la carga."
+        },
+        {
+          "id": "example-monday-5",
+          "exerciseId": "extension-vertical-con-mancuerna-triceps",
+          "sets": "2",
+          "reps": "10–15",
+          "rest": "90",
+          "notes": "Extensión por encima de la cabeza con una mancuerna. Elige una carga cómoda y mantén el tronco estable."
+        }
+      ]
+    }
+  ]
+}
