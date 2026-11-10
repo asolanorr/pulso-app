@@ -1,10 +1,12 @@
 # Pulso · Instalar como PWA
 
+**App publicada: [Abrir Pulso](https://pulso-app-pi.vercel.app/).** Usa esta dirección de producción para instalarla y compartirla.
+
 Pulso permite crear rutinas, consultar GIFs, marcar series y controlar descansos. Guarda los datos en cada dispositivo, sin cuentas ni sincronización. La versión nativa para iOS y Android se conserva.
 
 ## Instalar en iPhone
 
-1. Abre la dirección publicada de Pulso en **Safari**, con internet.
+1. Abre **https://pulso-app-pi.vercel.app/** en **Safari**, con internet.
 2. Pulsa **Compartir → Añadir a pantalla de inicio**. Activa **Abrir como app** si aparece esa opción.
 3. Pulsa **Añadir** y abre Pulso desde su icono.
 4. En **Ajustes**, espera **Preparada para abrir sin conexión**.
