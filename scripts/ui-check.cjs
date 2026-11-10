@@ -32,6 +32,9 @@ const dependencies = {
   },
   'react-native-safe-area-context': {SafeAreaView: Box},
   'expo-router': {router: {}, useLocalSearchParams: () => ({routineId: routine.id, mode})},
+  './src/dialogs': {Alert: {alert() {}}},
+  './src/share-routines': {shareRoutines: async () => {}},
+  './src/import-file': {ImportFile: () => null},
   './src/catalog.json': catalog,
   './src/examples/monday-chest-triceps.json': require('../src/examples/monday-chest-triceps.json'),
   './src/screen-modal': {ScreenModal: ({visible, children}) => visible ? h(Box, null, children) : null},
@@ -74,6 +77,8 @@ const settingsDependencies = {
     return h('button', {'aria-label': accessibilityLabel, 'aria-checked': accessibilityState?.checked}, children);
   }, Alert: {alert: (title, message, buttons) => {lastAlert = {title, message, buttons};}}},
   'expo-constants': {__esModule: true, default: {executionEnvironment: 'storeClient'}, ExecutionEnvironment: {StoreClient: 'storeClient'}},
+  '../dialogs': {Alert: {alert: (title, message, buttons) => {lastAlert = {title, message, buttons};}}},
+  '../pwa-settings': {PwaSettings: () => null},
   '../ui': dependencies['./src/ui'], '../theme-model': themeModel,
   '../data-reset': {useDataReset: () => ({resetting: false, resetAll: async () => {resetCalls++;}})},
   '../theme': {useTheme: () => ({preferences: {mode: themeMode, palette}, mode: themeModel.resolveThemeMode(themeMode, 'light'), colors: themeModel.themeColors(palette, themeModel.resolveThemeMode(themeMode, 'light')),

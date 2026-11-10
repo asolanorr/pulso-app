@@ -37,7 +37,9 @@
     "web": "expo start --web",
     "check": "tsc --noEmit && node scripts/check.cjs && node scripts/ui-check.cjs && node scripts/theme-check.cjs && node scripts/storage-check.cjs",
     "export:check": "expo export --platform all --no-bytecode --max-workers 2",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "build:pwa": "node scripts/build-pwa.cjs",
+    "preview:pwa": "node scripts/serve-pwa.cjs"
   },
   "private": true
 }

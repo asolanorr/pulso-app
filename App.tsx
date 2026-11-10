@@ -1,7 +1,10 @@
+import {shareRoutines} from './src/share-routines';
+import {ImportFile} from './src/import-file';
+import {Alert} from './src/dialogs';
 import React, {useMemo, useState} from 'react';
 import {
-  ActivityIndicator, Alert, FlatList, KeyboardAvoidingView, Linking, Modal,
-  Platform, Pressable, ScrollView, Share, StyleSheet, Text, TextInput, View,
+  ActivityIndicator, FlatList, KeyboardAvoidingView, Linking, Modal,
+  Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {router, useLocalSearchParams} from 'expo-router';
@@ -63,7 +66,7 @@ export default function App() {
     setNaming(null);
   };
   const share = async () => {
-    try {await Share.share({title: routine?.name ?? 'Mis rutinas', message: JSON.stringify({version: 1, routines: routine ? [routine] : routines}, null, 2)});}
+    try {await shareRoutines(routine?.name ?? 'Mis rutinas', JSON.stringify({version: 1, routines: routine ? [routine] : routines}, null, 2));}
     catch {Alert.alert('No se pudo compartir', 'Tus rutinas siguen guardadas. Vuelve a intentarlo.');}
   };
   const importNow = () => {
@@ -252,7 +255,7 @@ export default function App() {
           <ScrollView keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" contentContainerStyle={s.content}>
             <Text style={s.body}>Pega el texto que te compartieron desde Pulso. Se añadirá una copia y conservarás tus rutinas actuales.</Text>
             <View style={s.exampleCard}><Text style={s.routineTitle}>Lunes - Pecho y Tríceps</Text><Text style={s.meta}>Rutina de ejemplo · 5 ejercicios</Text><Button label="Cargar rutina de ejemplo" icon="copy" variant="secondary" onPress={() => {setImportText(JSON.stringify(mondayExample, null, 2)); setImportError('');}}/></View>
-            <Text style={s.fieldLabel}>Datos de la rutina</Text><TextInput keyboardAppearance={themeMode} accessibilityLabel="Datos de la rutina" multiline textAlignVertical="top" autoCapitalize="none" autoCorrect={false} placeholder="Pega aquí el texto completo" placeholderTextColor={c.muted} style={[s.input, {height: 260}]} value={importText} onChangeText={setImportText}/>
+            <ImportFile onText={setImportText} onError={setImportError}/><Text style={s.fieldLabel}>Datos de la rutina</Text><TextInput keyboardAppearance={themeMode} accessibilityLabel="Datos de la rutina" multiline textAlignVertical="top" autoCapitalize="none" autoCorrect={false} placeholder="Pega aquí el texto completo" placeholderTextColor={c.muted} style={[s.input, {height: 260}]} value={importText} onChangeText={setImportText}/>
             {!!importError && <Text accessibilityRole="alert" style={s.errorText}>{importError}</Text>}
             <Button label="Importar rutina" icon="download" disabled={!importText.trim()} onPress={importNow}/>
           </ScrollView>

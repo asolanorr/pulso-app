@@ -1,3 +1,5 @@
+import {DialogHost} from '../dialog-host';
+import {PwaSettingsRegistration} from '../pwa-registration';
 import React, {useEffect} from 'react';
 import {ActivityIndicator, Text, View} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -16,7 +18,7 @@ import {ThemeProvider, useTheme} from '../theme';
 import {DataResetProvider} from '../data-reset';
 
 export default function Layout() {
-  return <SafeAreaProvider><DataResetProvider><ThemeProvider><AppShell/></ThemeProvider></DataResetProvider></SafeAreaProvider>;
+  return <SafeAreaProvider><DataResetProvider><ThemeProvider><AppShell/><DialogHost/><PwaSettingsRegistration/></ThemeProvider></DataResetProvider></SafeAreaProvider>;
 }
 function AppShell() {
   const {colors, mode, ready} = useTheme();

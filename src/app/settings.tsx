@@ -1,5 +1,7 @@
+import {PwaSettings} from '../pwa-settings';
+import {Alert} from '../dialogs';
 import React, {useMemo} from 'react';
-import {Alert, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {router} from 'expo-router';
 import {Button, Icon, fonts as f} from '../ui';
@@ -56,7 +58,7 @@ export default function SettingsScreen() {
         <Button label="Ver mis rutinas" icon="arrow-right" onPress={() => router.replace('/')}/>
       </View>
       <View style={s.saveStatus}><Icon name={theme.saveError ? 'alert-circle' : 'check'} size={16} color={theme.saveError ? c.danger : c.muted}/><Text accessibilityLiveRegion="polite" style={[s.meta, theme.saveError && {color: c.danger}]}>{theme.saveError ? 'No se pudo guardar la apariencia. Tu selección podría perderse al cerrar.' : 'Tu preferencia se guarda automáticamente en este teléfono.'}</Text></View>
-      <View style={s.resetCard}><Text accessibilityRole="header" style={s.title}>Datos de la app</Text><Text style={s.body}>Restablece tus rutinas, el entrenamiento y la apariencia de este dispositivo. Exporta una copia de tus rutinas si quieres conservarlas.</Text><Button label="Borrar todos mis datos" icon="trash-2" variant="danger" disabled={reset.resetting} onPress={confirmReset}/></View>
+      <PwaSettings/><View style={s.resetCard}><Text accessibilityRole="header" style={s.title}>Datos de la app</Text><Text style={s.body}>Restablece tus rutinas, el entrenamiento y la apariencia de este dispositivo. Exporta una copia de tus rutinas si quieres conservarlas.</Text><Button label="Borrar todos mis datos" icon="trash-2" variant="danger" disabled={reset.resetting} onPress={confirmReset}/></View>
     </ScrollView>
   </SafeAreaView>;
 }

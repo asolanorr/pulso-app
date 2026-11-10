@@ -1,7 +1,8 @@
+import {Alert} from './dialogs';
 import React, {createContext, useContext, useRef, useState} from 'react';
-import {ActivityIndicator, Alert, Platform, StyleSheet, Text, View} from 'react-native';
-import {Image} from 'expo-image';
-import * as Notifications from 'expo-notifications';
+import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
+import {clearImageCache} from './clear-image-cache';
+import {clearRestAlerts} from './rest-alerts';
 import {beginStorageReset, endStorageReset, removeApplicationData, waitForPendingWrites} from './app-storage';
 
 const Context = createContext<{resetting: boolean; resetAll: () => Promise<void>} | null>(null);
@@ -16,21 +17,10 @@ export function DataResetProvider({children}: {children: React.ReactNode}) {
     beginStorageReset();
     try {
       await waitForPendingWrites();
-      if (Platform.OS !== 'web') {
-        try {
-          const scheduled = await Notifications.getAllScheduledNotificationsAsync();
-          await Promise.all(scheduled.filter(item => item.identifier.startsWith('pulso-rest-')).map(item => Notifications.cancelScheduledNotificationAsync(item.identifier)));
-          const presented = await Notifications.getPresentedNotificationsAsync();
-          await Promise.all(presented.filter(item => item.request.identifier.startsWith('pulso-rest-')).map(item => Notifications.dismissNotificationAsync(item.request.identifier)));
-        } catch {warnings.push('No se pudieron retirar todos los avisos de descanso del sistema.');}
-      }
+      try {await clearRestAlerts();} catch {warnings.push('No se pudieron retirar todos los avisos de descanso.');}
       await removeApplicationData();
-      if (Platform.OS !== 'web') {
-        try {
-          const cleared = await Promise.all([Image.clearMemoryCache(), Image.clearDiskCache()]);
-          if (cleared.some(value => !value)) warnings.push('Parte de la caché de imágenes puede permanecer.');
-        } catch {warnings.push('No se pudo vaciar la caché de imágenes.');}
-      }
+      try {if (!await clearImageCache()) warnings.push('Parte de la caché de imágenes puede permanecer.');}
+      catch {warnings.push('No se pudo vaciar la caché de imágenes.');}
     } catch {failure = true;}
     finally {
       endStorageReset();

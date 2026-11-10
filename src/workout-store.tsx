@@ -1,18 +1,13 @@
 import React, {createContext, useCallback, useContext, useEffect, useRef, useState} from 'react';
-import {AppState, Platform, Vibration} from 'react-native';
+import {AppState} from 'react-native';
 import {readData, storageEpoch, writeData} from './app-storage';
-import * as Notifications from 'expo-notifications';
-import {AndroidImportance} from 'expo-notifications';
+import {signalRestComplete, prepareRestAlert, scheduleRestAlert, cancelRestAlert} from './rest-alerts';
 import {Routine, uid} from './model';
 import catalog from './catalog.json';
 import {Rest, Workout, createWorkout, nextPending, remainingSeconds, restSeconds, restoreWorkout, toggleSet} from './workout-model';
 
 const KEY = '@pulso/workout/v1';
 const notificationId = (workoutId: string, rest: Rest) => `pulso-rest-${workoutId}-${rest.id}`;
-if (Platform.OS !== 'web') Notifications.setNotificationHandler({handleNotification: async () => ({
-  shouldShowBanner: false, shouldShowList: false, shouldPlaySound: false, shouldSetBadge: false,
-})});
-
 type Store = {
   workout: Workout | null; ready: boolean; blocked: boolean; saveError: boolean; now: number; restNotice: string;
   begin: (routine: Routine) => void; choose: (entryId: string) => void; mark: (entryId: string, index: number) => void;
@@ -44,7 +39,7 @@ export function WorkoutProvider({children}: {children: React.ReactNode}) {
       const value = current.current;
       if (AppState.currentState !== 'active' || !value?.rest || value.rest.notified || value.rest.endsAt > time || value.finishedAt !== null) return;
       commit({...value, rest: {...value.rest, notified: true}});
-      if (Platform.OS !== 'web') Vibration.vibrate();
+      signalRestComplete();
     };
     if (!workoutId || finishedAt !== null) return;
     tick();
@@ -54,8 +49,8 @@ export function WorkoutProvider({children}: {children: React.ReactNode}) {
   }, [workoutId, finishedAt, commit]);
 
   const cancelNotification = (value: Workout | null) => {
-    if (value?.rest && Platform.OS !== 'web') {
-      Notifications.cancelScheduledNotificationAsync(notificationId(value.id, value.rest)).catch(() => {
+    if (value?.rest) {
+      cancelRestAlert(notificationId(value.id, value.rest)).catch(() => {
         setRestNotice('No se pudo cancelar el aviso del sistema; todavía puede aparecer.');
       });
     }
@@ -87,24 +82,14 @@ export function WorkoutProvider({children}: {children: React.ReactNode}) {
     const operation = restOperation.current;
     const rest: Rest = {id: uid(), entryId: entry.id, endsAt: Date.now() + seconds * 1000, seconds, notified: false};
     commit({...value, rest}); setNow(Date.now());
-    if (Platform.OS === 'web') {setRestNotice('El aviso del teléfono está disponible en Android y iPhone.'); return;}
     try {
-      if (Platform.OS === 'android') await Notifications.setNotificationChannelAsync('pulso-rest', {
-        name: 'Descanso de entrenamiento', importance: AndroidImportance.HIGH,
-        vibrationPattern: [0, 400, 200, 400], enableVibrate: true, sound: 'default',
-      });
-      let permissions = await Notifications.getPermissionsAsync();
-      if (!permissions.granted && permissions.canAskAgain) permissions = await Notifications.requestPermissionsAsync({ios: {allowAlert: true, allowSound: true, allowBadge: false}});
+      const notice = await prepareRestAlert();
       if (operation !== restOperation.current || epoch.current !== storageEpoch()) return;
-      if (!permissions.granted) {setRestNotice('Mantén la app abierta para recibir la vibración. Puedes activar notificaciones en los ajustes del teléfono.'); return;}
+      if (notice) {setRestNotice(notice); return;}
       const remaining = remainingSeconds(rest.endsAt);
       if (!remaining) return;
-      const identifier = await Notifications.scheduleNotificationAsync({
-        identifier: notificationId(value.id, rest),
-        content: {title: 'Descanso terminado', body: 'Puedes continuar con tu siguiente serie.', sound: 'default'},
-        trigger: {type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL, seconds: remaining, repeats: false, ...(Platform.OS === 'android' ? {channelId: 'pulso-rest'} : {})},
-      });
-      if (operation !== restOperation.current || epoch.current !== storageEpoch()) await Notifications.cancelScheduledNotificationAsync(identifier);
+      const identifier = await scheduleRestAlert(notificationId(value.id, rest), remaining);
+      if (operation !== restOperation.current || epoch.current !== storageEpoch()) await cancelRestAlert(identifier);
     } catch {
       if (operation === restOperation.current) setRestNotice('El aviso con la pantalla bloqueada no está disponible. Con la app abierta se mantiene la vibración.');
     }
