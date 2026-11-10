@@ -25,16 +25,20 @@ La PWA publicada funciona sin Expo Go y sin mantener encendida tu computadora.
 
 En Safari para Mac puedes usar **Archivo → Añadir al Dock**, si esa opción está disponible.
 
-## Publicar la app por primera vez
+## Publicar en Vercel por primera vez
 
 Estos pasos los realiza el propietario del repositorio; los amigos solo necesitan la dirección publicada.
 
-1. Sube esta versión a `main` en `asolanorr/pulso-app`.
-2. En GitHub abre **Settings → Pages → Build and deployment → Source → GitHub Actions**.
-3. Abre **Actions → Publicar PWA → Run workflow** y espera el resultado verde.
-4. Abre el enlace mostrado por el despliegue. Con este repositorio será **https://asolanorr.github.io/pulso-app/**.
+1. En [Vercel](https://vercel.com/new), elige **Import Git Repository** e importa únicamente `asolanorr/pulso-app` en tu cuenta personal. Si GitHub pide acceso, selecciona solo ese repositorio.
+2. Usa **Project Name: pulso-app**, **Framework Preset: Other** y **Root Directory: ./** (la raíz del repositorio; no `outputs/rutinas`).
+3. Pulsa **Deploy**. El archivo `vercel.json` define la compilación, la carpeta `dist` y las rutas. No se necesitan variables secretas ni servicios adicionales.
+4. Cuando aparezca **Ready**, abre el dominio de producción que indique Vercel y compártelo con tus amigos.
 
-El enlace solo estará disponible cuando el despliegue termine. La app es pública, pero las rutinas guardadas en tu navegador no se publican en GitHub.
+Usa el dominio estable de producción para instalar Pulso. Las direcciones de previsualización pueden estar protegidas por el acceso a Vercel. El dominio exacto depende de la disponibilidad del nombre; no asumas una dirección hasta que Vercel la confirme.
+
+Los cambios posteriores en `main` se publican automáticamente mediante la integración de Vercel con GitHub. No necesitas activar GitHub Pages. Su workflow queda disponible solo para ejecución manual como alternativa.
+
+La app publicada es pública, pero tus rutinas se guardan localmente y no se suben a GitHub ni se comparten entre usuarios. Si cambias de dominio, exporta e importa tus rutinas: cada dominio tiene su propio almacenamiento.
 
 ## Transferir o respaldar rutinas
 
